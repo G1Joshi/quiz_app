@@ -20,7 +20,10 @@ class Home extends StatelessWidget {
       backgroundColor: Colors.blueGrey[900],
       appBar: AppBar(
         backgroundColor: Colors.blueGrey[800],
-        title: Text('Quiz Time', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          'Quiz Time',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: HomePage(),
