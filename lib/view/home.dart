@@ -12,23 +12,84 @@ class _HomePageState extends State<HomePage> {
   Color? color;
   int? selected;
 
-  void checkAnswer(String selectedAnswer) {
+  void checkAnswer(String selectedAnswer) async {
     String correctAnswer = quiz.getAnswer();
-    setState(() {
-      if (selectedAnswer == correctAnswer) {
+    if (selectedAnswer == correctAnswer) {
+      quiz.correct();
+      setState(() {
         score.add(Icon(
           Icons.check,
           color: Colors.green,
         ));
         color = Colors.green;
-      } else {
+      });
+    } else {
+      quiz.wrong();
+      setState(() {
         score.add(Icon(
           Icons.close,
           color: Colors.red,
         ));
         color = Colors.red;
-      }
+      });
+    }
+
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      selected = -1;
     });
+
+    int qNo = quiz.nextQuestion();
+    if (qNo == -1) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Quiz Summary'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    'Total Questions: ${quiz.total()}',
+                    style: TextStyle(
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Correct Answer: ${quiz.correct()}',
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Wrong Answer: ${quiz.wrong()}',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  setState(() {
+                    quiz.reset();
+                    score.clear();
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -58,7 +119,7 @@ class _HomePageState extends State<HomePage> {
           ),
           ListView.builder(
             shrinkWrap: true,
-            itemCount: 4,
+            itemCount: quiz.getOptions().length,
             itemBuilder: (context, index) => Card(
               margin: EdgeInsets.all(8),
               shadowColor: Colors.blueGrey[900],
@@ -71,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                     quiz.getOptions()[index],
                     style: TextStyle(
                       color: Colors.white,
+                      fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                     ),
                   ),
