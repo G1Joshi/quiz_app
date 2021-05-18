@@ -1,4 +1,4 @@
-import 'package:quiz_app/model/question.dart';
+import 'package:quiz_time/model/question.dart';
 
 class Questions {
   int _qNo = 0;
