@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/service/question_bank.dart';
+import 'package:quiz_time/service/question_bank.dart';
 
 class HomePage extends StatefulWidget {
   @override
