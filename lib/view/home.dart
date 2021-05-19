@@ -10,7 +10,7 @@ class _HomePageState extends State<HomePage> {
   late Questions quiz;
   List<Icon> score = [];
   Color? color;
-  int? selected;
+  int selected = -1;
 
   void checkAnswer(String selectedAnswer) async {
     String correctAnswer = quiz.getAnswer();
@@ -34,9 +34,10 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {
-      selected = -1;
+    await Future.delayed(Duration(milliseconds: 1000), () {
+      setState(() {
+        selected = -1;
+      });
     });
 
     int qNo = quiz.nextQuestion();
@@ -112,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 25.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  // color: Colors.white,
                 ),
               ),
             ),
@@ -122,25 +123,25 @@ class _HomePageState extends State<HomePage> {
             itemCount: quiz.getOptions().length,
             itemBuilder: (context, index) => Card(
               margin: EdgeInsets.all(8),
-              shadowColor: Colors.blueGrey[900],
               child: MaterialButton(
-                textColor: Colors.white,
-                color: selected == index ? color : Colors.blueGrey[800],
+                color:
+                    selected == index ? color : Theme.of(context).primaryColor,
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
                     quiz.getOptions()[index],
                     style: TextStyle(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                     ),
                   ),
                 ),
-                onPressed: () {
-                  selected = index;
-                  checkAnswer(quiz.getOptions()[index]);
-                },
+                onPressed: (selected == -1)
+                    ? () {
+                        selected = index;
+                        checkAnswer(quiz.getOptions()[index]);
+                      }
+                    : () {},
               ),
             ),
           ),
